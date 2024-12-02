@@ -28,7 +28,14 @@ const manifest = deepmerge(
     version: packageJson.version,
     description: '__MSG_extensionDescription__',
     host_permissions: ['<all_urls>'],
-    permissions: ['storage', 'scripting', 'tabs', 'notifications'],
+    permissions: ['storage', 'scripting', 'tabs', 'notifications', 'identity'],
+    oauth2: {
+      client_id: '732033254721-c41kudrf7ovj8afqoh7ggc22jd7t7l5q.apps.googleusercontent.com',
+      scopes: ['https://www.googleapis.com/auth/youtube.force-ssl'],
+    },
+    trial_tokens: [
+      'Ar5Mg6M04kDaYsFEAWDiKC78Tsi+Xx2mvFgp05Xoq0llz8I8aUpkc2enAaw/K/NvItms2TVETx6ev/7uqaolEQAAAABzeyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vbGpvY2RlbWFwb2JvbmNqa25icG1scGxpaWdmcGNqcGYiLCJmZWF0dXJlIjoiQUlTdW1tYXJpemF0aW9uQVBJIiwiZXhwaXJ5IjoxNzUzMTQyNDAwfQ==',
+    ],
     options_page: 'options/index.html',
     background: {
       service_worker: 'background.iife.js',

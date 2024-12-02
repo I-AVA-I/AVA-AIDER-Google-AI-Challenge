@@ -3,7 +3,7 @@ import { Button } from '@extension/ui';
 import { useStorage } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
 
-export default function App() {
+export default function DefaultApp() {
   const theme = useStorage(exampleThemeStorage);
 
   useEffect(() => {
