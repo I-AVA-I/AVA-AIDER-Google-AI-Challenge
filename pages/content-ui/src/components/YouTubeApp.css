@@ -23,6 +23,13 @@
     align-items: flex-start;
     gap: 12px;
   }
+
+  .youtube-app-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   
   .youtube-app-title {
     font-size: 1.5rem;
@@ -60,3 +67,29 @@
     background-color: #505050; 
   }
   
+  .language-selector-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .language-selector {
+    background-color: #1e1e1e; 
+    color: white;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .language-selector:hover {
+    border-color: #007bff;
+  }
+  
+  .language-selector:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
+  }
