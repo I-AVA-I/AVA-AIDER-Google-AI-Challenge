@@ -135,26 +135,44 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return;
     }
 
-    console.log(subtitles.map((subtitle: any) => subtitle.start + ' ' + subtitle.dur + ' ' + subtitle.text).join(' '));
-    const subtitlesText = subtitles.map((subtitle: any) => subtitle.text).join(' ');
+    const maxBlockLength = 2000;
+    const overlapLines = 2;
 
-    summarizeText(subtitlesText)
-      .then(summary => {
-        sendResponse({ success: true, summary });
-      })
-      .catch(error => {
-        console.error('Error summarizing subtitles:', error);
-        sendResponse({
-          success: false,
-          error: 'An error occurred while summarizing subtitles.',
+    const blocks = splitSubtitlesWithOverlap(subtitles, maxBlockLength, overlapLines);
+    console.log('Generated blocks:', blocks);
+
+    const summaries: string[] = [];
+
+    const processBlock = (index: number) => {
+      if (index >= blocks.length) {
+        const finalSummary = summaries.join('\n\n');
+        sendResponse({ success: true, summary: finalSummary });
+        return;
+      }
+
+      const subtitlesText = blocks[index].text;
+      const previousBlock = blocks[index - 1] ? blocks[index - 1] : null;
+
+      summarizeText(subtitlesText, previousBlock?.text)
+        .then(summary => {
+          summaries.push(`Block ${index + 1}:\n${summary}`);
+          processBlock(index + 1);
+        })
+        .catch(error => {
+          console.error(`Error summarizing block ${index + 1}:`, error);
+          sendResponse({
+            success: false,
+            error: `An error occurred while summarizing block ${index + 1}.`,
+          });
         });
-      });
+    };
 
+    processBlock(0);
     return true;
   }
 });
 
-const summarizeText = async (text: string) => {
+const summarizeText = async (text: string, blockContext?: string) => {
   if (!('ai' in self && 'summarizer' in self.ai)) {
     throw new Error('Summarizer API is not supported in this browser.');
   }
@@ -162,9 +180,14 @@ const summarizeText = async (text: string) => {
   const options = {
     sharedContext: 'This is a youtube subtitles',
     type: 'key-points',
-    format: 'markdown',
+    format: 'plain-text',
     length: 'long',
+    context: '',
   };
+
+  if (blockContext) {
+    options.context += blockContext;
+  }
 
   const available = (await self.ai.summarizer.capabilities()).available;
   let summarizer;
@@ -187,3 +210,45 @@ const summarizeText = async (text: string) => {
 
   return summarizer.summarize(text);
 };
+
+function splitSubtitlesWithOverlap(
+  subtitles: { start: number; dur: number; text: string }[],
+  maxBlockLength: number,
+  overlapLines: number,
+) {
+  const blocks: { start: number; end: number; text: string }[] = [];
+  let currentBlock: { start: number; end: number; text: string } | null = null;
+  let currentText = '';
+  let currentStart = subtitles[0]?.start || 0;
+
+  for (let i = 0; i < subtitles.length; i++) {
+    const subtitle = subtitles[i];
+    const nextText = `${currentText} ${subtitle.text}`.trim();
+
+    if (nextText.length > maxBlockLength) {
+      blocks.push({
+        start: currentStart,
+        end: subtitle.start,
+        text: currentText.trim(),
+      });
+
+      currentStart = subtitles[Math.max(0, i - overlapLines)].start;
+      currentText = subtitles
+        .slice(Math.max(0, i - overlapLines), i + 1)
+        .map(s => s.text)
+        .join(' ');
+    } else {
+      currentText = nextText;
+    }
+  }
+
+  if (currentText.trim().length > 0) {
+    blocks.push({
+      start: currentStart,
+      end: subtitles[subtitles.length - 1].start + subtitles[subtitles.length - 1].dur,
+      text: currentText.trim(),
+    });
+  }
+
+  return blocks;
+}
