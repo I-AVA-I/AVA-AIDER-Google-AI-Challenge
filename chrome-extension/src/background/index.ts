@@ -148,15 +148,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-const summarizeText = async (text: any) => {
+const summarizeText = async (text: string) => {
   if (!('ai' in self && 'summarizer' in self.ai)) {
     throw new Error('Summarizer API is not supported in this browser.');
   }
 
   const options = {
+    sharedContext: 'This is a youtube subtitles',
     type: 'key-points',
     format: 'markdown',
-    length: 'medium',
+    length: 'long',
   };
 
   const available = (await self.ai.summarizer.capabilities()).available;
@@ -175,6 +176,8 @@ const summarizeText = async (text: any) => {
     });
     await summarizer.ready;
   }
+
+  console.log(text);
 
   return summarizer.summarize(text);
 };

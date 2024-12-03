@@ -3,6 +3,7 @@ interface AISummarizerCapabilities {
 }
 
 const options: AISummarizerOptions = {
+  sharedContext: 'This is a scientific article',
   type: 'key-points',
   format: 'markdown',
   length: 'medium',
