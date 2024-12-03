@@ -28,7 +28,7 @@ async function getSubtitles(videoID: string, lang = 'en') {
   if (!data.includes('captionTracks')) {
     throw new Error(`Could not find captions for video: ${videoID}`);
   }
-  console.log(data);
+  //console.log("LOL " + data);
   const regex = /"captionTracks":(\[.*?\])/;
   const match = regex.exec(data);
   if (!match || !match[1]) {
@@ -45,13 +45,18 @@ async function getSubtitles(videoID: string, lang = 'en') {
   }
 
   console.log(captionTracks);
-  const subtitle =
+
+  let subtitle =
     captionTracks.find((track: any) => track.vssId === `.${lang}`) ||
     captionTracks.find((track: any) => track.vssId === `a.${lang}`) ||
     captionTracks.find((track: any) => track.vssId && track.vssId.match(`.${lang}`));
 
   if (!subtitle || !subtitle.baseUrl) {
-    throw new Error(`Could not find ${lang} captions for ${videoID}`);
+    lang = captionTracks[0].languageCode;
+    subtitle =
+      captionTracks.find((track: any) => track.vssId === `.${lang}`) ||
+      captionTracks.find((track: any) => track.vssId === `a.${lang}`) ||
+      captionTracks.find((track: any) => track.vssId && track.vssId.match(`.${lang}`));
   }
 
   const transcriptData = await fetchData(subtitle.baseUrl);
@@ -130,6 +135,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return;
     }
 
+    console.log(subtitles.map((subtitle: any) => subtitle.start + ' ' + subtitle.dur + ' ' + subtitle.text).join(' '));
     const subtitlesText = subtitles.map((subtitle: any) => subtitle.text).join(' ');
 
     summarizeText(subtitlesText)

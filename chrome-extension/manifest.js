@@ -35,6 +35,7 @@ const manifest = deepmerge(
     },
     trial_tokens: [
       'Ar5Mg6M04kDaYsFEAWDiKC78Tsi+Xx2mvFgp05Xoq0llz8I8aUpkc2enAaw/K/NvItms2TVETx6ev/7uqaolEQAAAABzeyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vbGpvY2RlbWFwb2JvbmNqa25icG1scGxpaWdmcGNqcGYiLCJmZWF0dXJlIjoiQUlTdW1tYXJpemF0aW9uQVBJIiwiZXhwaXJ5IjoxNzUzMTQyNDAwfQ==',
+      'AnRKxvT7nZu7Hc+MqKlC1bzKLM1QrYvBkfnPcSgs1LLl8vzUTE59dWCuyaDG2SrDA5Ma3aKu3vWQfAqcdt6yVgkAAABveyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vbGpvY2RlbWFwb2JvbmNqa25icG1scGxpaWdmcGNqcGYiLCJmZWF0dXJlIjoiVHJhbnNsYXRpb25BUEkiLCJleHBpcnkiOjE3NTMxNDI0MDB9',
     ],
     options_page: 'options/index.html',
     background: {
