@@ -330,6 +330,37 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
 
+  pages/content-youtube:
+    dependencies:
+      '@extension/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@extension/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      '@extension/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+    devDependencies:
+      '@extension/hmr':
+        specifier: workspace:*
+        version: link:../../packages/hmr
+      '@extension/tailwindcss-config':
+        specifier: workspace:*
+        version: link:../../packages/tailwind-config
+      '@extension/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@extension/vite-config':
+        specifier: workspace:*
+        version: link:../../packages/vite-config
+      concurrently:
+        specifier: ^9.0.1
+        version: 9.0.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+
   pages/devtools:
     dependencies:
       '@extension/shared':
