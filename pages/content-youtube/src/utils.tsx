@@ -19,3 +19,19 @@ export function isYouTubeVideoPage() {
   const videoId = extractVideoId(window.location.href);
   return !!videoId;
 }
+
+export function waitForElement(selector: string, callback: (element: Element) => void) {
+  const element = document.querySelector(selector);
+  if (element) {
+    callback(element);
+  } else {
+    const observer = new MutationObserver(() => {
+      const element = document.querySelector(selector);
+      if (element) {
+        observer.disconnect();
+        callback(element);
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+}
