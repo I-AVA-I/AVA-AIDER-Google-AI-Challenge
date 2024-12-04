@@ -45,14 +45,14 @@ class Summarizer {
     this.summarizerInstance = await self.ai.summarizer.create(this.options);
   }
 
-  public async summarize(text: string): Promise<string> {
+  public async summarize(text: string, signal?: AbortSignal): Promise<string> {
     if (!this.summarizerInstance) {
       await this.init();
     }
 
     if (text.length <= this.options.maxInputChunkLength!) {
       // Input is small enough to process directly
-      return await this.summarizerInstance.summarize(text);
+      return await this.summarizerInstance.summarize(text, { signal });
     } else {
       // Input is larger than `maxInputChunkLength` characters
       // We need to split the text
@@ -61,12 +61,12 @@ class Summarizer {
       const summaries: string[] = [];
 
       for (const chunk of chunks) {
-        const summary = await this.summarizerInstance.summarize(chunk);
+        const summary = await this.summarizerInstance.summarize(chunk, { signal });
         summaries.push(summary);
       }
 
       // Final summary of summaries
-      return await this.summarizerInstance.summarize(summaries.join('\n\n'));
+      return await this.summarizerInstance.summarize(summaries.join('\n\n'), { signal });
     }
   }
 

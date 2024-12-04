@@ -23,15 +23,17 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@extension/i18n": "workspace:*",
     "@extension/shared": "workspace:*",
     "@extension/storage": "workspace:*",
     "@extension/ui": "workspace:*",
+    "react-icons": "^5.4.0",
     "react-markdown": "^9.0.1"
   },
   "devDependencies": {
+    "@extension/hmr": "workspace:*",
     "@extension/tailwindcss-config": "workspace:*",
     "@extension/tsconfig": "workspace:*",
-    "@extension/hmr": "workspace:*",
     "@extension/vite-config": "workspace:*",
     "concurrently": "^9.0.1",
     "cross-env": "^7.0.3"

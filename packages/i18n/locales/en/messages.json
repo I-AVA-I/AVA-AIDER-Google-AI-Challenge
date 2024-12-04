@@ -26,5 +26,38 @@
   "hello": {
     "description": "Placeholder example",
     "message": "Hello $1"
+  },
+  "summarizeVideo": {
+    "message": "Summarize Video"
+  },
+  "transcriptSummary": {
+    "message": "Transcript Summary"
+  },
+  "loading_key": {
+    "message": "Making Key Points "
+  },
+  "loading_tldr": {
+    "message": "Making TL;DR "
+  },
+  "subtitlesUnavailable": {
+    "message": "Subtitles are not available for this video."
+  },
+  "failedToSummarize": {
+    "message": "Failed to summarize subtitles."
+  },
+  "keyPoints": {
+    "message": "Key Points"
+  },
+  "tldr": {
+    "message": "TL;DR"
+  },
+  "short": {
+    "message": "Short"
+  },
+  "medium": {
+    "message": "Medium"
+  },
+  "long": {
+    "message": "Long"
   }
 }
