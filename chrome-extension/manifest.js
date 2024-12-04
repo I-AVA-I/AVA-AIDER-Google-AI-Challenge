@@ -5,12 +5,12 @@ const packageJson = JSON.parse(fs.readFileSync('../package.json', 'utf8'));
 
 const isFirefox = process.env.__FIREFOX__ === 'true';
 
-const sidePanelConfig = {
-  side_panel: {
-    default_path: 'side-panel/index.html',
-  },
-  permissions: ['sidePanel'],
-};
+// const sidePanelConfig = {
+//   side_panel: {
+//     default_path: 'side-panel/index.html',
+//   },
+//   permissions: ['sidePanel'],
+// };
 
 /**
  * After changing, please reload the extension at `chrome://extensions`
@@ -62,7 +62,7 @@ const manifest = deepmerge(
       },
     ],
   },
-  !isFirefox && sidePanelConfig,
+  !isFirefox,
 );
 
 export default manifest;
