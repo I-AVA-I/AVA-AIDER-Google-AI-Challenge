@@ -5,13 +5,12 @@ import YouTubeApp from '@src/components/YouTubeApp';
 import youtubeAppCSS from '@src/components/YouTubeApp.css?inline';
 import { extractVideoId, isYouTubeVideoPage, waitForElement } from '@src/utils';
 
-// Variables to hold the root instance and the root element
 let rootInstance: Root | null = null;
 let rootElement: HTMLDivElement | null = null;
 
+// Function to inject the React component into the page
 function injectYouTubeComponent() {
   waitForElement('#secondary', targetContainer => {
-    // Function to inject the React component into the page
     const videoId = extractVideoId(window.location.href);
 
     if (!videoId) {
@@ -20,16 +19,11 @@ function injectYouTubeComponent() {
     }
 
     if (rootInstance) {
-      console.log('Updating YouTube component with new videoId.');
-      // Update the component with the new videoId
       rootInstance.render(<YouTubeApp videoId={videoId} />);
       return;
     }
 
-    console.log('Injecting YouTube component...');
-
     if (!targetContainer) {
-      console.warn('Target container not found.');
       return;
     }
 
@@ -53,7 +47,6 @@ function injectYouTubeComponent() {
     if (secondaryInner) {
       targetContainer.insertBefore(rootElement, secondaryInner);
     } else {
-      console.warn('secondary-inner not found, adding to secondary.');
       targetContainer.appendChild(rootElement);
     }
   });
@@ -66,7 +59,6 @@ function removeYouTubeComponent() {
     rootElement.remove();
     rootInstance = null;
     rootElement = null;
-    console.log('Removed existing extension component.');
   }
 }
 

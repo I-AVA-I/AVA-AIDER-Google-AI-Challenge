@@ -42,13 +42,6 @@ const manifest = deepmerge(
       service_worker: 'background.iife.js',
       type: 'module',
     },
-    action: {
-      default_popup: 'popup/index.html',
-      default_icon: 'icon-34.png',
-    },
-    // chrome_url_overrides: {
-    //   newtab: 'new-tab/index.html',
-    // },
     icons: {
       128: 'icon-128.png',
     },
@@ -62,7 +55,6 @@ const manifest = deepmerge(
         css: ['content.css'], // public folder
       },
     ],
-    devtools_page: 'devtools/index.html',
     web_accessible_resources: [
       {
         resources: ['*.js', '*.css', '*.svg', 'icon-128.png', 'icon-34.png'],

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { MdContentCopy, MdFormatListBulleted } from 'react-icons/md';
-import { MdFormatAlignJustify } from 'react-icons/md';
-import { t } from '@extension/i18n';
-import { YouTubeAppProps } from '../YouTubeAppProps';
-import '@src/components/YouTubeApp.css';
+import { MdContentCopy, MdFormatListBulleted, MdFormatAlignJustify } from 'react-icons/md';
 import Summarizer, { SummarizerOptions } from '@src/services/Summarizer';
-import { Subtitle, subtitlesToText } from '@src/utils/subtitlesToText';
+import { subtitlesToText } from '@src/utils/subtitlesToText';
+import { t } from '@extension/i18n';
+import '@src/components/YouTubeApp.css';
+import { getYTSubtitles } from '@src/utils/getYTSubtitles';
+
+const MAX_INPUT_CHUNK_LENGTH = 4000;
+const OVERLAP_CHUNK_LENGTH = 500;
 
 const languageOptions = [
   { code: 'en', label: 'EN' },
@@ -20,6 +22,10 @@ const lengthOptions = [
   { value: 'medium', label: t('medium') },
   { value: 'long', label: t('long') },
 ];
+
+export type YouTubeAppProps = {
+  videoId: string | null;
+};
 
 const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   const [subtitles, setSubtitles] = useState<any[]>([]);
@@ -42,7 +48,6 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   useEffect(() => {
     if (subtitles.length > 0) {
       summarizeSubtitles();
-      setIsLoading(true);
     }
   }, [summaryType, summaryLength, selectedLanguage]);
 
@@ -56,20 +61,16 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     setIsPanelVisible(false);
   };
 
-  const fetchSubtitles = () => {
-    chrome.runtime.sendMessage({ action: 'getSubtitles', videoID: videoId, lang: 'en' }, response => {
-      if (response.success) {
-        if (response.subtitles && response.subtitles.length > 0) {
-          setSubtitles(response.subtitles);
-          setError(null);
-        } else {
-          setError(t('subtitlesUnavailable'));
-        }
-      } else {
-        setError(response.error || t('subtitlesUnavailable'));
-      }
+  const fetchSubtitles = async (videoId: string) => {
+    try {
+      const subtitles = await getYTSubtitles(videoId);
+      setSubtitles(subtitles);
+      setError(null);
+    } catch (error: unknown) {
+      setError(t('subtitlesUnavailable'));
+    } finally {
       setIsFetched(true);
-    });
+    }
   };
 
   const summarizeSubtitles = async () => {
@@ -98,8 +99,8 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
       type: summaryType,
       format: 'markdown',
       length: summaryLength,
-      maxInputChunkLength: 4000,
-      overlapChunkLength: 500,
+      maxInputChunkLength: MAX_INPUT_CHUNK_LENGTH,
+      overlapChunkLength: OVERLAP_CHUNK_LENGTH,
     };
     const summarizer = new Summarizer(summarizerOptions);
 
@@ -109,8 +110,8 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
         summary = await translateSummary(summary);
       }
       setSummary(summary);
-    } catch (error) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         console.log('Summarization request was aborted');
       } else {
         setError(t('failedToSummarize'));
@@ -139,17 +140,19 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     }
   };
 
-  // useEffect(() => {
-  //   let dotInterval: number;
-  //   if (isLoading) {
-  //     dotInterval = setInterval(() => {
-  //       setDotCount((prevCount) => (prevCount % 4) + 1);
-  //     }, 1000);
-  //   } else {
-  //     setDotCount(1);
-  //   }
-  //   return () => clearInterval(dotInterval);
-  // }, [isLoading]);
+  useEffect(() => {
+    let dotInterval: number;
+    if (isLoading) {
+      dotInterval = setInterval(() => {
+        setDotCount(prevCount => (prevCount % 4) + 1);
+      }, 1000);
+    } else {
+      setDotCount(1);
+    }
+    return () => {
+      clearInterval(dotInterval);
+    };
+  }, [isLoading]);
 
   const copyToClipboard = () => {
     if (summary) {
@@ -187,8 +190,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
                 <select
                   value={summaryLength}
                   onChange={e => setSummaryLength(e.target.value as 'short' | 'medium' | 'long')}
-                  className="menu-selector"
-                  style={{ marginRight: '10px' }}>
+                  className="menu-selector margin-right-10">
                   {lengthOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
