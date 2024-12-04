@@ -39,10 +39,33 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   const [dotCount, setDotCount] = useState(1);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Theme state
+
+  // Detect YouTube theme
+  useEffect(() => {
+    const checkTheme = () => {
+      const html = document.documentElement;
+      // Replace 'dark-theme' with the actual class used by YouTube
+      const isDark = html.classList.contains('dark-theme') || window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkTheme();
+
+    // Observe changes to the class attribute on <html>
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    // Cleanup on unmount
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     resetState();
-    fetchSubtitles();
+    if (videoId) {
+      fetchSubtitles(videoId);
+    }
   }, [videoId]);
 
   useEffect(() => {
@@ -143,7 +166,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   useEffect(() => {
     let dotInterval: number;
     if (isLoading) {
-      dotInterval = setInterval(() => {
+      dotInterval = window.setInterval(() => {
         setDotCount(prevCount => (prevCount % 4) + 1);
       }, 1000);
     } else {
@@ -161,7 +184,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   };
 
   return (
-    <div className="youtube-app-container">
+    <div className={`youtube-app-container ${isDarkMode ? 'dark' : 'light'}`}>
       {subtitles.length > 0 && !isPanelVisible && (
         <button className="youtube-app-button" onClick={summarizeSubtitles}>
           {t('summarizeVideo')}
@@ -190,7 +213,8 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
                 <select
                   value={summaryLength}
                   onChange={e => setSummaryLength(e.target.value as 'short' | 'medium' | 'long')}
-                  className="menu-selector margin-right-10">
+                  className="menu-selector"
+                  style={{ marginRight: '10px' }}>
                   {lengthOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}

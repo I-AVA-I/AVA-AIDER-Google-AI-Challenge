@@ -78,4 +78,8 @@ This tool addresses a common challenge faced by learners: extracting concise, mu
 ## **License**
 This project is licensed under the MIT License. You are free to use, modify, and distribute this project in compliance with the license terms.
 
+## **Acknowledgments**
+
+* Google Chrome AI Challenge for inspiring this project.
+* To https://github.com/Zoreslaw for awesome hard work! 
 

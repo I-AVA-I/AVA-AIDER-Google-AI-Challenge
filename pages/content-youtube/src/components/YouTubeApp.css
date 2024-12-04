@@ -50,11 +50,6 @@
   margin-bottom: 12px;
 }
 
-.youtube-app-description {
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
 .youtube-app-button {
   display: block;
   width: 100%;
@@ -71,20 +66,20 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.summary-container {
-  font-size: 14px;
-}
-
-.summary-container ul {
-  padding-left: 1em;
-}
-
 .youtube-app-button:hover {
   background-color: #3d3d3d;
 }
 
 .youtube-app-button:active {
   background-color: #505050;
+}
+
+.summary-container {
+  font-size: 14px;
+}
+
+.summary-container ul {
+  padding-left: 1em;
 }
 
 .language-selector-container {
@@ -102,14 +97,13 @@
   appearance: none;
   cursor: pointer;
   outline: none;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.menu-selector:hover {
-  border-color: rgba(255,255,255, 0.2);
-}
-
+.menu-selector:hover,
 .menu-selector:focus {
-  border-color: rgba(255,255,255, 0.2);
+  background-color: rgba(255,255,255, 0.2);
 }
 
 .error-body {
@@ -145,6 +139,7 @@
   cursor: pointer;
   color: white;
   padding: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .toggle-icons .icon.active {
@@ -171,3 +166,52 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* Light Theme Overrides */
+.youtube-app-container.light .youtube-app-panel {
+  background-color: rgba(0,0,0, 0.05);
+  color: rgb(19, 19, 19);
+}
+
+.youtube-app-container.light .youtube-app-button {
+  background-color: rgba(0,0,0, 0.05);
+  color: rgb(19, 19, 19);
+}
+
+.youtube-app-container.light .youtube-app-button:hover {
+  background-color: #d5d5d5;
+}
+
+.youtube-app-container.light .youtube-app-button:active {
+  background-color: #c0c0c0;
+}
+
+.youtube-app-container.light .menu-selector {
+  background-color: #e0e0e0;
+  color: rgb(19, 19, 19);
+}
+
+.youtube-app-container.light .menu-selector:hover,
+.youtube-app-container.light .menu-selector:focus {
+  background-color: #d5d5d5;
+}
+
+.youtube-app-container.light .toggle-icons {
+  background-color: #e0e0e0;
+}
+
+.youtube-app-container.light .toggle-icons .icon {
+  color: rgb(19, 19, 19);
+}
+
+.youtube-app-container.light .toggle-icons .icon.active {
+  background-color: #d5d5d5;
+}
+
+.youtube-app-container.light .copy-button {
+  background-color: #e0e0e0;
+  color: rgb(19, 19, 19);
+}
+
+.youtube-app-container.light .copy-button:hover {
+  background-color: #d5d5d5;
+}
