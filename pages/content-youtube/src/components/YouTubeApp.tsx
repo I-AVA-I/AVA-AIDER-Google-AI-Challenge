@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { MdContentCopy, MdFormatListBulleted, MdFormatAlignJustify } from 'react-icons/md';
+import { MdContentCopy, MdFormatListBulleted, MdFormatAlignJustify, MdCheck } from 'react-icons/md';
 import Summarizer, { SummarizerOptions } from '@src/services/Summarizer';
 import { subtitlesToText } from '@src/utils/subtitlesToText';
 import { t } from '@extension/i18n';
@@ -40,6 +40,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true); // Theme state
+  const [copySuccess, setCopySuccess] = useState(false); // New state for copy success
 
   // Detect YouTube theme
   useEffect(() => {
@@ -82,6 +83,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     setSummary(null);
     setDotCount(1);
     setIsPanelVisible(false);
+    setCopySuccess(false);
   };
 
   const fetchSubtitles = async (videoId: string) => {
@@ -115,6 +117,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     setSummary(null);
     setDotCount(1);
     setIsPanelVisible(true);
+    setCopySuccess(false); // Reset copy success when starting a new summary
 
     const text = subtitlesToText(subtitles, false);
     const summarizerOptions: SummarizerOptions = {
@@ -179,7 +182,15 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
 
   const copyToClipboard = () => {
     if (summary) {
-      navigator.clipboard.writeText(summary);
+      navigator.clipboard
+        .writeText(summary)
+        .then(() => {
+          setCopySuccess(true);
+          setTimeout(() => setCopySuccess(false), 2000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+        });
     }
   };
 
@@ -247,8 +258,8 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
             {summary && (
               <div className="summary-container">
                 <ReactMarkdown>{summary}</ReactMarkdown>
-                <button className="copy-button" onClick={copyToClipboard}>
-                  <MdContentCopy size={20} />
+                <button className="copy-button" onClick={copyToClipboard} title={copySuccess ? t('copied') : t('copy')}>
+                  {copySuccess ? <MdCheck size={20} /> : <MdContentCopy size={20} />}
                 </button>
               </div>
             )}

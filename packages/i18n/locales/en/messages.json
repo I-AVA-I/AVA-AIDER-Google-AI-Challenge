@@ -59,5 +59,11 @@
   },
   "long": {
     "message": "Long"
+  },
+  "copied": {
+    "message": "Copied"
+  },
+  "copy": {
+    "message": "Copy"
   }
 }
