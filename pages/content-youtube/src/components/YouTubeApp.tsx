@@ -7,7 +7,7 @@ import { t } from '@extension/i18n';
 import '@src/components/YouTubeApp.css';
 import { getYTSubtitles } from '@src/utils/getYTSubtitles';
 
-const MAX_INPUT_CHUNK_LENGTH = 4000;
+const MAX_INPUT_CHUNK_LENGTH = 3000;
 const OVERLAP_CHUNK_LENGTH = 500;
 
 const languageOptions = [
@@ -114,10 +114,11 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     setAbortController(newAbortController);
 
     setIsLoading(true);
+    setError(null);
     setSummary(null);
     setDotCount(1);
     setIsPanelVisible(true);
-    setCopySuccess(false); // Reset copy success when starting a new summary
+    setCopySuccess(false);
 
     const text = subtitlesToText(subtitles, false);
     const summarizerOptions: SummarizerOptions = {
