@@ -18,6 +18,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   ];
 
   const fetchSubtitles = () => {
+    console.log('fetching subs: ');
     chrome.runtime.sendMessage(
       { action: 'getSubtitles', videoID: videoId, lang: 'en' },
       (response: { success: boolean; subtitles?: any[]; error?: string }) => {
@@ -91,7 +92,7 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
   return (
     <div className="youtube-app-container">
       <div className="youtube-app-header">
-        <h1 className="youtube-app-title">Aider</h1>
+        <h1 className="youtube-app-title"> Summarize </h1>
         <div className="language-selector-container">
           <select
             value={selectedLanguage}
