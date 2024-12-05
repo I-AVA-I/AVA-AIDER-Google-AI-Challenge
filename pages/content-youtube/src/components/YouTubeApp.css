@@ -101,6 +101,15 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.menu-selector option {
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+
+.youtube-app-container.light .menu-selector option {
+  background-color: #e0e0e0; /* Фон для светлой темы */
+  color: rgb(19, 19, 19); /* Цвет текста для светлой темы */
+}
+
 .menu-selector:hover,
 .menu-selector:focus {
   background-color: rgba(255,255,255, 0.2);

@@ -132,11 +132,18 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
     const summarizer = new Summarizer(summarizerOptions);
 
     try {
+      if (newAbortController.signal.aborted) {
+        throw new Error('Request aborted before it started');
+      }
+
       let summary = await summarizer.summarize(text, newAbortController.signal);
       if (selectedLanguage !== 'en') {
         summary = await translateSummary(summary);
       }
-      setSummary(summary);
+
+      if (!newAbortController.signal.aborted) {
+        setSummary(summary);
+      }
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
         console.log('Summarization request was aborted');
@@ -144,7 +151,9 @@ const YouTubeApp: React.FC<YouTubeAppProps> = ({ videoId }) => {
         setError(t('failedToSummarize'));
       }
     } finally {
-      setIsLoading(false);
+      if (!newAbortController.signal.aborted) {
+        setIsLoading(false);
+      }
     }
   };
 
