@@ -25,13 +25,18 @@ export default async function getSubtitles(videoID: string, lang = 'en') {
   }
 
   console.log(captionTracks);
-  const subtitle =
+
+  let subtitle =
     captionTracks.find((track: any) => track.vssId === `.${lang}`) ||
     captionTracks.find((track: any) => track.vssId === `a.${lang}`) ||
     captionTracks.find((track: any) => track.vssId && track.vssId.match(`.${lang}`));
 
   if (!subtitle || !subtitle.baseUrl) {
-    throw new Error(`Could not find ${lang} captions for ${videoID}`);
+    lang = captionTracks[0].languageCode;
+    subtitle =
+      captionTracks.find((track: any) => track.vssId === `.${lang}`) ||
+      captionTracks.find((track: any) => track.vssId === `a.${lang}`) ||
+      captionTracks.find((track: any) => track.vssId && track.vssId.match(`.${lang}`));
   }
 
   const transcriptData = await fetchData(subtitle.baseUrl);
